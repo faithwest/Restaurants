@@ -1,70 +1,120 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
+# Getting Started with pizzeria
 
 In the project directory, you can run:
 
 ### `npm start`
-
 Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 0R
+##HONCHO
+1. pip install honcho to run the app on one server
+2.  create a Procfile file and insert the following details:
+web: PORT=4000 npm start --prefix client
+api: gunicorn -b 127.0.0.1:5555 --chdir ./server app:app
+3. $ honcho start
 
-### `npm test`
+
+
+
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Flask Code Challenge - Pizza Restaurants
+For this assessment, you'll be working with a Pizza Restaurant domain.
+Note: You are required to come up with a fully built React frontend application, so you can test if your API is working. A fully functional front end will also be assessed for this code challenge.
+Models
+You need to create the following relationships:
+- A `Restaurant` has many `Pizza`s through `RestaurantPizza`
+- A `Pizza` has many `Restaurant`s through `RestaurantPizza`
+- A `RestaurantPizza` belongs to a `Restaurant` and belongs to a `Pizza`
+Validations
+Add validations to the `RestaurantPizza` model:
+- must have a `price` between 1 and 30
+Routes
+Set up the following routes. Make sure to return JSON data in the format specified along with the appropriate HTTP verb.
+ 
 
-### `npm run build`
+GET /restaurants:
+Return JSON data in the format below:
+[
+  {
+    "id": 1,
+    "name": "Sottocasa NYC",
+    "address": "298 Atlantic Ave, Brooklyn, NY 11201"
+  },
+  {
+    "id": 2,
+    "name": "PizzArte",
+    "address": "69 W 55th St, New York, NY 10019"
+  }
+]
+GET /restaurants/:id:
+If the `Restaurant` exists, return JSON data in the format below:
+{
+  "id": 1,
+  "name": "Sottocasa NYC",
+  "address": "298 Atlantic Ave, Brooklyn, NY 11201",
+  "pizzas": [
+    {
+      "id": 1,
+      "name": "Cheese",
+      "ingredients": "Dough, Tomato Sauce, Cheese"
+    },
+    {
+      "id": 2,
+      "name": "Pepperoni",
+      "ingredients": "Dough, Tomato Sauce, Cheese, Pepperoni"
+    }
+  ]
+}
+If the `Restaurant` does not exist, return the following JSON data, along with the appropriate HTTP status code:
+{
+  "error": "Restaurant not found"
+}
+ 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+DELETE /restaurants/:id:
+If the `Restaurant` exists, it should be removed from the database, along with any `RestaurantPizza`s that are associated with it (a `RestaurantPizza` belongs to a `Restaurant`, so you need to delete the `RestaurantPizza`s before the `Restaurant` can be deleted).
+After deleting the `Restaurant`, return an _empty_ response body, along with the appropriate HTTP status code.
+If the `Restaurant` does not exist, return the following JSON data, along with the appropriate HTTP status code:
+{
+  "error": "Restaurant not found"
+}
+ 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+GET /pizzas:
+Return JSON data in the format below:
+[
+  {
+    "id": 1,
+    "name": "Cheese",
+    "ingredients": "Dough, Tomato Sauce, Cheese"
+  },
+  {
+    "id": 2,
+    "name": "Pepperoni",
+    "ingredients": "Dough, Tomato Sauce, Cheese, Pepperoni"
+  }
+]
+POST /restaurant_pizzas:
+This route should create a new `RestaurantPizza` that is associated with an existing `Pizza` and `Restaurant`. It should accept an object with the following properties in the body of the request:
+{
+  "price": 5,
+  "pizza_id": 1,
+  "restaurant_id": 3
+}
+If the `RestaurantPizza` is created successfully, send back a response with the data related to the `Pizza`:
+{
+  "id": 1,
+  "name": "Cheese",
+  "ingredients": "Dough, Tomato Sauce, Cheese"
+}
+If the `RestaurantPizza` is **not** created successfully, return the following JSON data, along with the appropriate HTTP status code:
+{
+  "errors": ["validation errors"]
+}
+Project Submission
+Create a private repository.
+Add your TM as a collaborator for grading and review.
+Submit the link to the repository.
+Happy Coding!!:)
